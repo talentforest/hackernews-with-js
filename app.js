@@ -1,15 +1,22 @@
 const ajax = new XMLHttpRequest();
-const NEWS_URL = "https://hacker-news.firebaseio.com/v0/item/8863.json"
+const BASE_URL = "https://hacker-news.firebaseio.com/v0/"
+const TOP_ID_URL = `${BASE_URL}topstories.json`
 
-ajax.open('GET', NEWS_URL, false);
+ajax.open('GET', TOP_ID_URL, false);
 ajax.send();
 
-const news = JSON.parse(ajax.response);
-
+const topStoriesId = JSON.parse(ajax.response).slice(0, 5);
 const ul = document.createElement('ul');
-const li = document.createElement('li');
 
-li.innerHTML = news.title;
-ul.appendChild(li)
+for (let i = 0; i < topStoriesId.length; i++) {
+  ajax.open('GET', `${BASE_URL}item/${topStoriesId[i]}.json`, false);
+  ajax.send();
+
+  const topStory = JSON.parse(ajax.response)
+
+  const li = document.createElement('li');
+  li.innerHTML = topStory.title;
+  ul.appendChild(li)
+}
 
 document.getElementById('root').appendChild(ul);

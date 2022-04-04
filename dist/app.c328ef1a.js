@@ -119,14 +119,22 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"app.js":[function(require,module,exports) {
 var ajax = new XMLHttpRequest();
-var NEWS_URL = "https://hacker-news.firebaseio.com/v0/item/8863.json";
-ajax.open('GET', NEWS_URL, false);
+var BASE_URL = "https://hacker-news.firebaseio.com/v0/";
+var TOP_ID_URL = "".concat(BASE_URL, "topstories.json");
+ajax.open('GET', TOP_ID_URL, false);
 ajax.send();
-var news = JSON.parse(ajax.response);
+var topStoriesId = JSON.parse(ajax.response).slice(0, 5);
 var ul = document.createElement('ul');
-var li = document.createElement('li');
-li.innerHTML = news.title;
-ul.appendChild(li);
+
+for (var i = 0; i < topStoriesId.length; i++) {
+  ajax.open('GET', "".concat(BASE_URL, "item/").concat(topStoriesId[i], ".json"), false);
+  ajax.send();
+  var topStory = JSON.parse(ajax.response);
+  var li = document.createElement('li');
+  li.innerHTML = topStory.title;
+  ul.appendChild(li);
+}
+
 document.getElementById('root').appendChild(ul);
 },{}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -156,7 +164,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57342" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61861" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
